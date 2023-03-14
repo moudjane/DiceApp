@@ -1,5 +1,6 @@
 # The different steps to use the application
 
+## Open your cmd and execute this following comment:
 ## ```git clone https://github.com/moudjane/DiceApp.git```
 
 ## ```npm install```
