@@ -3,6 +3,8 @@
 ## Open your cmd and execute this following comment:
 ## ```git clone https://github.com/moudjane/DiceApp.git```
 
+## ```cd DiceApp```
+
 ## ```npm install```
 
 ## ```npm start```
