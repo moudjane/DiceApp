@@ -4,7 +4,8 @@ import { Card, Title, Paragraph } from 'react-native-paper';
 import { StyleSheet } from 'react-native';
 
 const games = [
-    { name: 'Dobble', image: require('../assets/jeu2.jpg'), price: 12.99 },
+    { name: 'Dobble', image: require('../assets/jeu1.jpg'), price: 12.99 },
+    { name: 'Catan', image: require('../assets/jeu4.jpg'), price: 44.99 },
     { name: 'Monopoly', image: require('../assets/jeu2.jpg'), price: 22.00 },
     { name: 'Uno', image: require('../assets/jeu3.jpg'), price: 9.99 },
 ];
