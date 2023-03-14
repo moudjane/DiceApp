@@ -1,6 +1,6 @@
 # The different steps to use the application
 
-## ```git clone```
+## ```git clone https://github.com/moudjane/DiceApp.git```
 
 ## ```npm install```
 
