@@ -15,9 +15,9 @@ export function HomeScreen({ navigation }) {
             <View style={styles.carouselContainer}>
                 <Text>Here you have the latest news at Dice:</Text>
                 <ScrollView horizontal={true} pagingEnabled={true}>
-                    <Image style={styles.carouselImage} source={require('./jeu1.jpg')} />
-                    <Image style={styles.carouselImage} source={require('./dicee.jpg')} />
-                    <Image style={styles.carouselImage} source={require('./jeu1.jpg')} />
+                    <Image style={styles.carouselImage} source={require('../assets/jeu1.jpg')} />
+                    <Image style={styles.carouselImage} source={require('../assets/dicee.jpg')} />
+                    <Image style={styles.carouselImage} source={require('../assets/jeu1.jpg')} />
                 </ScrollView>
             </View>
             <View style={styles.quiz}>

@@ -1,6 +1,8 @@
-import { Button, View, Text } from "react-native";
+import { Button, View, Text, Image } from 'react-native';
 import { StyleSheet } from "react-native";
 import React, { useState, useEffect } from "react";
+import axios from 'axios';
+import { parseString } from '../node_modules/react-native-xml2js';
 
 export function QuizScreen({ navigation, games, questions, credentials }) {
     const [isQuizStarted, setIsQuizStarted] = useState(false);
@@ -9,6 +11,7 @@ export function QuizScreen({ navigation, games, questions, credentials }) {
     const [questionList, setQuestionList] = useState();
     const [questionNum, setQuestionNum] = useState(0);
     const [userResponses, setUserResponses] = useState({});
+    const [imageUrl, setImageUrl] = useState("https://cf.geekdo-images.com/c_87h8o0AOrfCO3hxMjjrA__thumb/img/OPNd-zRznLHOLfNDIN8rdhSMHPM=/fit-in/200x150/filters:strip_icc()/pic2349732.jpg")
 
     const [isSettingNumPlayers, setIsSettingNumPlayers] = useState(false);
     const [numPlayers, setNumPlayers] = useState(0);
@@ -229,6 +232,28 @@ export function QuizScreen({ navigation, games, questions, credentials }) {
         bestGame = bestGames[randomIndex];
 
         setRecommendedGame(bestGame);
+        getGameImage(bestGame.fields.ID)
+    }
+
+    function getGameImage(gameId) {
+        // Make a request to the API for the game ID
+        axios.get(`https://www.boardgamegeek.com/xmlapi/boardgame/${gameId}`)
+            .then(response => {
+                // Parse the XML data using react-native-xml2js
+                parseString(response.data, (err, result) => {
+                    if (err) {
+                        console.error(`Error parsing XML data: ${err}`);
+                        return;
+                    }
+                    // Find the <image> tag and extract its content
+                    imageContent = result.boardgames.boardgame[0].image[0];
+                    // Set the state with the image content
+                    setImageUrl(imageContent)
+                });
+            })
+            .catch(error => {
+                console.error(`Error retrieving data for game ID ${gameId}: ${error}`);
+            });
     }
 
     function reset(questions) {
@@ -308,70 +333,74 @@ export function QuizScreen({ navigation, games, questions, credentials }) {
                 )}
 
             <View style={styles.btn4}>
+                <View style={styles.btnduo}>
+                    <View style={styles.btnsolo}>
+                        {isQuizStarted &&
+                            !isQuizEnded &&
+                            isSettingNumPlayers &&
+                            !isSettingTime ? (
+                            <Button
+                                title="1 player"
+                                color="#e9bd1f"
+                                onPress={() => {
+                                    setNumPlayers(1);
+                                    setIsSettingNumPlayers(false);
+                                    setIsSettingTime(true);
+                                }}
+                            />
+                        ) : null}
+                    </View>
 
-                {isQuizStarted &&
-                    !isQuizEnded &&
-                    isSettingNumPlayers &&
-                    !isSettingTime ? (
-                    <Button
-                        title="1 player"
-                        color="#e9bd1f"
-                        onPress={() => {
-                            setNumPlayers(1);
-                            setIsSettingNumPlayers(false);
-                            setIsSettingTime(true);
-                        }}
-                    />
-                ) : null}
+                    {isQuizStarted &&
+                        !isQuizEnded &&
+                        isSettingNumPlayers &&
+                        !isSettingTime ? (
+                        <Button
+                            title="2 players"
+                            color="#e9bd1f"
+                            onPress={() => {
+                                setNumPlayers(2);
+                                setIsSettingNumPlayers(false);
+                                setIsSettingTime(true);
+                            }}
+                        />
+                    ) : null}
+                </View>
+                <View style={styles.btnduo}>
+                    <View style={styles.btnsolo}>
+
+                        {isQuizStarted &&
+                            !isQuizEnded &&
+                            isSettingNumPlayers &&
+                            !isSettingTime ? (
+                            <Button
+                                title="3 players"
+                                color="#e9bd1f"
+                                onPress={() => {
+                                    setNumPlayers(3);
+                                    setIsSettingNumPlayers(false);
+                                    setIsSettingTime(true);
+                                }}
+                            />
+                        ) : null}
+                    </View>
 
 
-                {isQuizStarted &&
-                    !isQuizEnded &&
-                    isSettingNumPlayers &&
-                    !isSettingTime ? (
-                    <Button
-                        title="2 players"
-                        color="#e9bd1f"
-                        onPress={() => {
-                            setNumPlayers(2);
-                            setIsSettingNumPlayers(false);
-                            setIsSettingTime(true);
-                        }}
-                    />
-                ) : null}
-
-
-                {isQuizStarted &&
-                    !isQuizEnded &&
-                    isSettingNumPlayers &&
-                    !isSettingTime ? (
-                    <Button
-                        title="3 players"
-                        color="#e9bd1f"
-                        onPress={() => {
-                            setNumPlayers(3);
-                            setIsSettingNumPlayers(false);
-                            setIsSettingTime(true);
-                        }}
-                    />
-                ) : null}
-
-
-                {isQuizStarted &&
-                    !isQuizEnded &&
-                    isSettingNumPlayers &&
-                    !isSettingTime ? (
-                    <Button
-                        title="4+ players"
-                        color="#e9bd1f"
-                        onPress={() => {
-                            setNumPlayers(4);
-                            setIsSettingNumPlayers(false);
-                            setIsSettingTime(true);
-                        }}
-                    />
-                ) : null}
-
+                    {isQuizStarted &&
+                        !isQuizEnded &&
+                        isSettingNumPlayers &&
+                        !isSettingTime ? (
+                        <Button
+                            title="4+ players"
+                            color="#e9bd1f"
+                            onPress={() => {
+                                setNumPlayers(4);
+                                setIsSettingNumPlayers(false);
+                                setIsSettingTime(true);
+                            }}
+                        />
+                    ) : null}
+                </View>
             </View>
 
             {/* How many time */}
@@ -381,90 +410,107 @@ export function QuizScreen({ navigation, games, questions, credentials }) {
                 isSettingTime && (
                     <Text style={styles.text}>How many time do you have ?</Text>
                 )}
-            <View style={styles.btn5}>
-                {isQuizStarted &&
-                    !isQuizEnded &&
-                    !isSettingNumPlayers &&
-                    isSettingTime ? (
-                    <Button
-                        title="30 minutes"
-                        color="#e9bd1f"
-                        onPress={() => {
-                            setNumPlayers(1);
-                            setIsSettingTime(false);
-                        }}
-                    />
-                ) : null}
-                {isQuizStarted &&
-                    !isQuizEnded &&
-                    !isSettingNumPlayers &&
-                    isSettingTime ? (
-                    <Button
-                        title="1 hour"
-                        color="#e9bd1f"
-                        onPress={() => {
-                            setNumPlayers(2);
-                            setIsSettingTime(false);
-                        }}
-                    />
-                ) : null}
-                {isQuizStarted &&
-                    !isQuizEnded &&
-                    !isSettingNumPlayers &&
-                    isSettingTime ? (
-                    <Button
-                        title="2 hours"
-                        color="#e9bd1f"
-                        onPress={() => {
-                            setNumPlayers(3);
-                            setIsSettingTime(false);
-                        }}
-                    />
-                ) : null}
-                {isQuizStarted &&
-                    !isQuizEnded &&
-                    !isSettingNumPlayers &&
-                    isSettingTime ? (
-                    <Button
-                        title="2+ hours"
-                        color="#e9bd1f"
-                        onPress={() => {
-                            setNumPlayers(4);
-                            setIsSettingTime(false);
-                        }}
-                    />
-                ) : null}
+            <View style={styles.btn4}>
+                <View style={styles.btnduo}>
+                    <View style={styles.btnsolo}>
+                        {isQuizStarted &&
+                            !isQuizEnded &&
+                            !isSettingNumPlayers &&
+                            isSettingTime ? (
+                            <Button
+                                title="30 minutes"
+                                color="#e9bd1f"
+                                onPress={() => {
+                                    setNumPlayers(1);
+                                    setIsSettingTime(false);
+                                }}
+                            />
+                        ) : null}
+                    </View>
+                    {isQuizStarted &&
+                        !isQuizEnded &&
+                        !isSettingNumPlayers &&
+                        isSettingTime ? (
+                        <Button
+                            title="1 hour"
+                            color="#e9bd1f"
+                            onPress={() => {
+                                setNumPlayers(2);
+                                setIsSettingTime(false);
+                            }}
+                        />
+                    ) : null}
+                </View>
+
+                <View style={styles.btnduo}>
+                    <View style={styles.btnsolo}>
+                        {isQuizStarted &&
+                            !isQuizEnded &&
+                            !isSettingNumPlayers &&
+                            isSettingTime ? (
+                            <Button
+                                title="2 hours"
+                                color="#e9bd1f"
+                                onPress={() => {
+                                    setNumPlayers(3);
+                                    setIsSettingTime(false);
+                                }}
+                            />
+                        ) : null}
+                    </View>
+                    {isQuizStarted &&
+                        !isQuizEnded &&
+                        !isSettingNumPlayers &&
+                        isSettingTime ? (
+                        <Button
+                            title="2+ hours"
+                            color="#e9bd1f"
+                            onPress={() => {
+                                setNumPlayers(4);
+                                setIsSettingTime(false);
+                            }}
+                        />
+                    ) : null}
+                </View>
             </View>
 
             {isQuizEnded && recommendedGame && (
-                <Text style={styles.text}>You may like this game :</Text>
+                <Text style={styles.text2}>You may like this game :</Text>
             )}
             {isQuizEnded && recommendedGame && (
-                <Text style={styles.text}>
+                <Text style={styles.title}>
                     {JSON.stringify(recommendedGame.fields.Name)}
                 </Text>
             )}
-            <View style={styles.btnyesno2}>
-                {isQuizEnded ? (
-                    <Button
-                        title="Not satisfied ? More questions !"
-                        color="red"
-                        style={{ marginBottom: 10 }}
-                        onPress={() => {
-                            reset(questions);
-                        }}
-                    />
-                ) : null}
 
-                {isQuizEnded ? (
-                    <Button
-                        title="Restart quiz"
-                        color="blue"
-                        onPress={() => {
-                            completeReset();
-                        }}
-                    />
-                ) : null}
+            {isQuizEnded && recommendedGame && <Image
+                source={{ uri: imageUrl }}
+                style={{ width: 250, height: 200, resizeMode: "contain" }}
+            />}
+
+            <View style={styles.btnyesno2}>
+                <View style={styles.btnduo}>
+                    <View style={styles.btnsolo}>
+                        {isQuizEnded ? (
+                            <Button
+                                title="Not satisfied ? More questions !"
+                                color="red"
+                                onPress={() => {
+                                    reset(questions);
+                                }}
+                            />
+                        ) : null}
+                    </View>
+                    {isQuizEnded ? (
+                        <Button
+                            title="Restart quiz"
+                            color="blue"
+                            onPress={() => {
+                                completeReset();
+                            }}
+                        />
+                    ) : null}
+                </View>
             </View>
         </View>
     );
@@ -488,6 +534,14 @@ const styles = StyleSheet.create({
         textAlign: "center",
         padding: 18,
     },
+    text2: {
+        fontSize: 18,
+        textAlign: "center",
+    },
+    title: {
+        fontSize: 24,
+        fontWeight: 'bold'
+    },
     btnyesno: {
         width: "30%",
         flexDirection: "row",
@@ -496,11 +550,20 @@ const styles = StyleSheet.create({
     btnyesno2: {
         width: "70%",
         flexDirection: "column",
-        justifyContent: "space-between",
-        height: '15%',
-        // alignItems: "center",
-        // justifyContent: "center",
+        justifyContent: "space-between"
     },
+    btn4: {
+        width: "70%",
+        flexDirection: "row",
+        justifyContent: "space-between",
+    },
+    btnduo: {
+        marginBottom: 6,
+        padding: 10
+    },
+    btnsolo: {
+        paddingBottom: 20
+    }
 
 });
 
