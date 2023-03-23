@@ -1,6 +1,6 @@
 # The different steps to use the application
 
-## Open your cmd and execute the following commands:
+### Open your cmd and execute the following commands:
 ## ```git clone https://github.com/moudjane/DiceApp.git```
 
 ## ```cd DiceApp```
